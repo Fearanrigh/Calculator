@@ -12,11 +12,13 @@ struct CalculatorLogic {
     
     private var number : Double?
     
-    mutating func setNumber(_ number: Double) {
+    private var intermediateCalcuation : (n1 : Double, calcMethod : String)?
+    
+    mutating func setNumber(_ number : Double) {
         self.number = number
     }
     
-    func calculate(symbol : String) -> Double? {
+    mutating func calculate(symbol : String) -> Double? {
 
         if let n = number {
             if symbol == "+/-" {
@@ -25,12 +27,32 @@ struct CalculatorLogic {
                 return 0
             } else if symbol == "%" {
                 return n / 100.0
-            } else if symbol == "+" {
-                
             } else if symbol == "=" {
-                
+                return performTwoNumberCalculation(n2: n)
+            } else {
+                intermediateCalcuation = (n1 : n, calcMethod : symbol)
+                return n
             }
         }
         return nil
+    }
+    
+    private func performTwoNumberCalculation(n2 : Double) -> Double {
+        if let n1 = intermediateCalcuation?.n1,
+           let operation = intermediateCalcuation?.calcMethod {
+            switch operation {
+            case "+":
+                return n1 + n2
+            case "-":
+                return n1 - n2
+            case "×":
+                return n1 * n2
+            case "÷":
+                return n1 / n2
+            default:
+                return 0
+            }
+        }
+        return 0
     }
 }
